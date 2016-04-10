@@ -4,6 +4,8 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV SCALA_VERSION 2.11
 ENV KAFKA_VERSION 0.8.2.1
 ENV KAFKA_HOME /opt/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION"
+ENV NUM_PARTITIONS 1
+ENV KAFKA_LOGLEVEL DEBUG
 
 # Install Kafka, Zookeeper and other needed things
 RUN apt-get update && \
@@ -12,7 +14,8 @@ RUN apt-get update && \
     apt-get clean && \
     wget -q http://apache.mirrors.spacedump.net/kafka/"$KAFKA_VERSION"/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -O /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
     tar xfz /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -C /opt && \
-    rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz
+    rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
+    rm -rf $KAFKA_HOME/bin/windows/
 
 ADD start-kafka.sh /usr/bin/start-kafka.sh
 # Supervisor config

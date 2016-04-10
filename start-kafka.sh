@@ -52,10 +52,11 @@ if [ ! -z "$LOG_RETENTION_BYTES" ]; then
 fi
 
 # Configure the default number of log partitions per topic
-if [ ! -z "$NUM_PARTITIONS" ]; then
-    echo "default number of partition: $NUM_PARTITIONS"
-    sed -r -i "s/(num.partitions)=(.*)/\1=$NUM_PARTITIONS/g" ${KAFKA_HOME}/config/server.properties
-fi
+echo "default number of partition: $NUM_PARTITIONS"
+sed -r -i "s/(num.partitions)=(.*)/\1=$NUM_PARTITIONS/g" ${KAFKA_HOME}/config/server.properties
+# Setting default log level for kafka
+echo "default log level: $KAFKA_LOGLEVEL"
+sed -r -i "s/(log4j.rootLogger)=(\w+)/\1=$KAFKA_LOGLEVEL/g" ${KAFKA_HOME}/config/log4j.properties
 
 # Enable/disable auto creation of topics
 if [ ! -z "$AUTO_CREATE_TOPICS" ]; then
