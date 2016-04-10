@@ -9,7 +9,7 @@ ENV KAFKA_LOGLEVEL DEBUG
 
 # Install Kafka, Zookeeper and other needed things
 RUN apt-get update && \
-    apt-get install -y zookeeper wget supervisor dnsutils nano && \
+    apt-get install -y zookeeper dnsutils nano && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean && \
     wget -q http://apache.mirrors.spacedump.net/kafka/"$KAFKA_VERSION"/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -O /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
@@ -17,13 +17,11 @@ RUN apt-get update && \
     rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
     rm -rf $KAFKA_HOME/bin/windows/
 
-ADD start-kafka.sh /usr/bin/start-kafka.sh
-# Supervisor config
-ADD kafka.conf zookeeper.conf /etc/supervisor/conf.d/
-
-RUN chmod +x /usr/bin/start-kafka.sh
+ADD entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
 # 2181 is zookeeper, 9092 is kafka
 EXPOSE 2181 9092
 
-CMD ["supervisord", "-n"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["kafka"]
