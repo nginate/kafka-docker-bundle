@@ -6,6 +6,7 @@ ENV KAFKA_VERSION 0.8.2.1
 ENV KAFKA_HOME /opt/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION"
 ENV NUM_PARTITIONS 1
 ENV KAFKA_LOGLEVEL DEBUG
+ENV REPLICATION_FACTOR 1
 
 # Install Kafka, Zookeeper and other needed things
 RUN apt-get update && \
