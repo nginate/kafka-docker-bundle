@@ -71,9 +71,12 @@ log(){
 
     # Enable/disable auto creation of topics
     [[ ! -z "$AUTO_CREATE_TOPICS" ]] && {
-        echo "auto.create.topics.enable: $AUTO_CREATE_TOPICS"
+        log "auto.create.topics.enable: $AUTO_CREATE_TOPICS"
         echo "auto.create.topics.enable=$AUTO_CREATE_TOPICS" >> ${KAFKA_HOME}/config/server.properties
     }
+
+    log "offsets.topic.replication.factor : ${REPLICATION_FACTOR}"
+    echo "offsets.topic.replication.factor=$REPLICATION_FACTOR" >> ${KAFKA_HOME}/config/server.properties
 
     # Capture kill requests to stop properly
     trap "${KAFKA_HOME}/bin/kafka-server-stop.sh; echo 'Kafka stopped.'; exit" SIGHUP SIGINT SIGTERM

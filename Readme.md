@@ -40,6 +40,7 @@ Optional ENV variables:
 * LOG_RETENTION_BYTES: configure the size at which segments are pruned from the log, (default is 1073741824, for 1GB)
 * NUM_PARTITIONS: configure the default number of log partitions per topic (default:1)
 * KAFKA_LOGLEVEL: root loglevel for kafka server (default:debug)
+* REPLICATION_FACTOR : default replication level (default:1)
 
 #### In the box
 ----------
