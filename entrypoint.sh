@@ -45,10 +45,11 @@ log(){
             echo "can't create chroot in zookeeper, exit"
             exit 1
         }
+        sed -r -i "s/(zookeeper.connect)=(.*)/\1=localhost:2181\/$ZK_CHROOT/g" ${KAFKA_HOME}/config/server.properties
+    } || {
+        # configure kafka
+        sed -r -i "s/(zookeeper.connect)=(.*)/\1=localhost:2181/g" ${KAFKA_HOME}/config/server.properties
     }
-
-    # configure kafka
-    sed -r -i "s/(zookeeper.connect)=(.*)/\1=localhost:2181\/$ZK_CHROOT/g" ${KAFKA_HOME}/config/server.properties
 
     # Setting default log level for kafka
     log "default log level: $KAFKA_LOGLEVEL"
