@@ -40,17 +40,21 @@ log(){
     done
     # Set the zookeeper chroot
     [[ ! -z "$ZK_CHROOT" ]] && {
-
-
         # create the chroot node
         echo "create /$ZK_CHROOT \"\"" | /usr/share/zookeeper/bin/zkCli.sh || {
             echo "can't create chroot in zookeeper, exit"
             exit 1
         }
-
-        # configure kafka
         sed -r -i "s/(zookeeper.connect)=(.*)/\1=localhost:2181\/$ZK_CHROOT/g" ${KAFKA_HOME}/config/server.properties
+    } || {
+        # configure kafka
+        sed -r -i "s/(zookeeper.connect)=(.*)/\1=localhost:2181/g" ${KAFKA_HOME}/config/server.properties
     }
+
+    # Setting default log level for kafka
+    log "default log level: $KAFKA_LOGLEVEL"
+    sed -r -i "s/(log4j.rootLogger)=(\w+)/\1=$KAFKA_LOGLEVEL/g" ${KAFKA_HOME}/config/log4j.properties
+
 
     # Allow specification of log retention policies
     [[ ! -z "$LOG_RETENTION_HOURS" ]] && {
@@ -65,9 +69,10 @@ log(){
     # Configure the default number of log partitions per topic
     log "default number of partition: $NUM_PARTITIONS"
     sed -r -i "s/(num.partitions)=(.*)/\1=$NUM_PARTITIONS/g" ${KAFKA_HOME}/config/server.properties
-    # Setting default log level for kafka
-    log "default log level: $KAFKA_LOGLEVEL"
-    sed -r -i "s/(log4j.rootLogger)=(\w+)/\1=$KAFKA_LOGLEVEL/g" ${KAFKA_HOME}/config/log4j.properties
+
+    # Configure Kafka startup port
+    log "kafka port: $KAFKA_PORT"
+    sed -r -i "s/(port)=(.*)/\1=$KAFKA_PORT/g" ${KAFKA_HOME}/config/server.properties
 
     # Enable/disable auto creation of topics
     [[ ! -z "$AUTO_CREATE_TOPICS" ]] && {
@@ -77,6 +82,9 @@ log(){
 
     log "offsets.topic.replication.factor : ${REPLICATION_FACTOR}"
     echo "offsets.topic.replication.factor=$REPLICATION_FACTOR" >> ${KAFKA_HOME}/config/server.properties
+
+    log "leader.imbalance.check.interval.seconds : ${LEADER_REBALANCE_CHECK_INTERVAL}"
+    echo "leader.imbalance.check.interval.seconds=$LEADER_REBALANCE_CHECK_INTERVAL" >> ${KAFKA_HOME}/config/server.properties
 
     # Capture kill requests to stop properly
     trap "${KAFKA_HOME}/bin/kafka-server-stop.sh; echo 'Kafka stopped.'; exit" SIGHUP SIGINT SIGTERM
