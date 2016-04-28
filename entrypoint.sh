@@ -70,6 +70,10 @@ log(){
     log "default number of partition: $NUM_PARTITIONS"
     sed -r -i "s/(num.partitions)=(.*)/\1=$NUM_PARTITIONS/g" ${KAFKA_HOME}/config/server.properties
 
+    # Configure Kafka startup port
+    log "kafka port: $KAFKA_PORT"
+    sed -r -i "s/(port)=(.*)/\1=$KAFKA_PORT/g" ${KAFKA_HOME}/config/server.properties
+
     # Enable/disable auto creation of topics
     [[ ! -z "$AUTO_CREATE_TOPICS" ]] && {
         log "auto.create.topics.enable: $AUTO_CREATE_TOPICS"
