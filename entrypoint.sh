@@ -14,6 +14,11 @@ log(){
     echo -e "`date`\t$@"
 }
 
+replace_placeholder() {
+    log "Changing $1 to $2 in $3 with s|\{$1\}|$2|"
+    sed -ri "s|\{$1\}|$2|" $3
+}
+
 [[ $1 == *"kafka"* ]] && {
 
     # Configure advertised host/port if we run in helios
@@ -72,7 +77,7 @@ log(){
 
     # Configure Kafka startup port
     log "kafka port: $KAFKA_PORT"
-    sed -r -i "s/(port)=(.*)/\1=$KAFKA_PORT/g" ${KAFKA_HOME}/config/server.properties
+    replace_placeholder "port" ${KAFKA_PORT} "${KAFKA_HOME}/config/server.properties"
 
     # Enable/disable auto creation of topics
     [[ ! -z "$AUTO_CREATE_TOPICS" ]] && {

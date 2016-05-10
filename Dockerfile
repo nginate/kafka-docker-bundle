@@ -21,6 +21,8 @@ RUN apt-get update && \
     rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
     rm -rf $KAFKA_HOME/bin/windows/
 
+ADD server.properties $KAFKA_HOME/config/
+
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
