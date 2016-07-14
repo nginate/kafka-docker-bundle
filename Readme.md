@@ -41,6 +41,7 @@ Optional ENV variables:
 * NUM_PARTITIONS: configure the default number of log partitions per topic (default:1)
 * KAFKA_LOGLEVEL: root loglevel for kafka server (default:debug)
 * REPLICATION_FACTOR : default replication level (default:1)
+* OVERRIDE_KAFKA_PROPS: coma-separated list of overridden properties (e.g. offsets.topic.num.partitions=10,advertised.host.name=example.com)
 
 #### In the box
 ----------
