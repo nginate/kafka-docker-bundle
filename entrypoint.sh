@@ -91,6 +91,13 @@ log(){
     trap "/usr/share/zookeeper/bin/zkServer.sh stop; echo 'zookeeper stopped.'; exit" SIGHUP SIGINT SIGTERM
 
     set -- "${KAFKA_HOME}/bin/kafka-server-start.sh" "${KAFKA_HOME}/config/server.properties"
+
+    [[ ! -z "${OVERRIDE_KAFKA_PROPS}" ]] && {
+        IFS=',' read -ra OVERRIDE_KAFKA_PROPS <<< "${OVERRIDE_KAFKA_PROPS}"
+        for PROP in "${OVERRIDE_KAFKA_PROPS[@]}"; do
+            set -- $@ "--override ${PROP}"
+        done
+    }
 }
 
 log "Executing $@"
